@@ -1,0 +1,21 @@
+version: 2
+
+models:
+  - name: fct_funnel_conversion
+    description: "Q1 - Funnel leak detector. Conversion at each stage; the lowest 'from previous' % is the leak."
+  - name: fct_pipeline_velocity
+    description: "Q2 - Where deals stall. Days per stage + count of deals stuck >30 days."
+  - name: fct_win_loss
+    description: "Q3 - Win rate by segment, with an overall ROLLUP row."
+  - name: fct_channel_performance
+    description: "Q4 - Revenue vs volume by channel. revenue_per_lead exposes vanity channels."
+    columns:
+      - name: lead_source
+        tests: [not_null]
+  - name: fct_rep_performance
+    description: "Q5 - Per-rep win rate, cycle time, pipeline, ranked by won revenue."
+    columns:
+      - name: rep_id
+        tests: [unique, not_null]
+  - name: fct_revenue_health
+    description: "Q6 - Pipeline coverage and top-5 revenue concentration (forecast fragility)."

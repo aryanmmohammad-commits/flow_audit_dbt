@@ -1,0 +1,55 @@
+version: 2
+
+models:
+  - name: stg_companies
+    description: "Cleaned company dimension with a size segment (SMB / Mid-Market / Enterprise)."
+    columns:
+      - name: company_id
+        tests: [unique, not_null]
+
+  - name: stg_reps
+    description: "Sales reps and the team they belong to."
+    columns:
+      - name: rep_id
+        tests: [unique, not_null]
+
+  - name: stg_leads
+    description: "Demand funnel: one row per lead, with MQL / SQL flags."
+    columns:
+      - name: lead_id
+        tests: [unique, not_null]
+      - name: company_id
+        tests:
+          - relationships:
+              to: ref('stg_companies')
+              field: company_id
+      - name: lead_source
+        tests:
+          - accepted_values:
+              values: ['Referral','Webinar','Organic','Paid Search','Cold Outbound','Trade Show']
+
+  - name: stg_deals
+    description: "Sales funnel: one row per deal (opportunity)."
+    columns:
+      - name: deal_id
+        tests: [unique, not_null]
+      - name: rep_id
+        tests:
+          - relationships:
+              to: ref('stg_reps')
+              field: rep_id
+      - name: current_stage
+        tests:
+          - accepted_values:
+              values: ['Opportunity','Proposal','Negotiation','Closed Won','Closed Lost']
+
+  - name: stg_deal_stage_history
+    description: "One row per stage entry per deal."
+    columns:
+      - name: history_id
+        tests: [unique, not_null]
+
+  - name: stg_activities
+    columns:
+      - name: activity_id
+        tests: [unique, not_null]

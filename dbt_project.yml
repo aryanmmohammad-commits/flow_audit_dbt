@@ -1,0 +1,35 @@
+name: 'flow_audit'
+version: '1.0.0'
+profile: 'flow_audit'
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+analysis-paths: ["analyses"]
+clean-targets: ["target", "dbt_packages"]
+
+# Layering: raw (seeds) -> staging (views) -> intermediate (views) -> marts (tables)
+models:
+  flow_audit:
+    staging:
+      +materialized: view
+    intermediate:
+      +materialized: view
+    marts:
+      +materialized: table
+
+seeds:
+  flow_audit:
+    +quote_columns: false
+    # Keep raw data as text; the staging layer is where casting happens.
+    # (Stops DuckDB from auto-typing the nullable date columns and choking on "".)
+    raw_leads:
+      +column_types:
+        created_at: varchar
+        mql_at: varchar
+        sql_at: varchar
+    raw_deals:
+      +column_types:
+        created_at: varchar
+        closed_at: varchar

@@ -1,0 +1,7 @@
+flow_audit:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: flow_audit.duckdb
+      threads: 4
